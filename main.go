@@ -1,7 +1,7 @@
 package main
 
 import (
-	// "fmt"
+	"fmt"
 	"net/http"
 	"github.com/julienschmidt/httprouter"
 	"dlser/handler"
@@ -12,5 +12,8 @@ func main() {
 	
 	router.POST("/download", handler.RequestHandler)
 
-	http.ListenAndServe(":7080", router)
+	err := http.ListenAndServe(":9898", router)
+	if err != nil {
+		fmt.Println(err)
+	}
 }
