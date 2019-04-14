@@ -7,7 +7,8 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"io/ioutil"
 	"net/http"
-	"os/exec"
+	"dlser/execute"
+	"strings"
 )
 
 func RequestHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -25,18 +26,11 @@ func RequestHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 
 	var reqBody map[string]interface{}
 	json.Unmarshal(data, &reqBody)
-	fmt.Println(reqBody["addr"].(string))
+	url := reqBody["addr"].(string)
+	urlSlice := strings.Split(url, "/")
+	fileName := urlSlice[len(urlSlice) - 1]
 
-	// 创建命令
-	cmd := exec.Command("wget", reqBody["addr"].(string), "-P", "./download")
-
-	// 执行命令
-	err = cmd.Start()
-	if err != nil {
-		res := common.HandleRes(-1, "错误", nil, err)
-		fmt.Fprintln(w, res)
-		return
-	}
+	go execute.AddTask(execute.DlTask{ Addr: url, Name: fileName })
 
 	res := common.HandleRes(0, "开始下载", nil, nil)
 	fmt.Fprintln(w, res)
