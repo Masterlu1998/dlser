@@ -22,7 +22,7 @@ func init() {
 
 func scheduler() {	
 	for val := range dlch {
-		fmt.Println("执行下载", val)
+		fmt.Println("执行下载")
 		executeTask(&val)
 	}
 }
