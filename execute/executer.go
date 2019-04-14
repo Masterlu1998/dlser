@@ -1,9 +1,7 @@
 package execute
 
 import (
-	"io"
-	"net/http"
-	"os"
+	"os/exec"
 	"fmt"
 )
 
@@ -36,21 +34,15 @@ func AddTask(task DlTask) {
 func executeTask(task *DlTask) {
 	url := task.Addr
 	fmt.Println("开始下载")
-	res, err := http.Get(url)
-	fmt.Println("1111")
 
-	if err != nil {
-		task.Status = -1
-		return
-	}
-	downloadPath := "./file/" + task.Name
-	f, err := os.Create(downloadPath)
-	defer f.Close()
+	cmd := exec.Command("wget", url, "-P", "./file")
+	err := cmd.Run()
 	if err != nil {
 		fmt.Println(err)
 		task.Status = -1
 		return
 	}
-	io.Copy(f, res.Body)
+
+	task.Status = 1
 	fmt.Println("下载完成")
 }
