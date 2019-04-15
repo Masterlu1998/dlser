@@ -5,10 +5,10 @@ import(
 )
 
 type DlTask struct {
-	ID int `gorm:"primary_key; AUTO_INCREMENT"`
-	Addr string
-	Name   string
-	Status int
+	ID int `gorm:"primary_key; AUTO_INCREMENT" json:"id"`
+	Addr string `json:"addr"`
+	Name   string `json:"name"`
+	Status int `json:"status"`
 }
 
 func (this *DlTask) CreateTask() {
