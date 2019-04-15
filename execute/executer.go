@@ -37,6 +37,7 @@ func executeTask(task *mysql.DlTask) {
 	if err != nil {
 		fmt.Println(err)
 		task.Status = -1
+		task.UpdateTask(task)
 		return
 	}
 
