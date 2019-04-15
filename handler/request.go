@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"dlser/execute"
+	"dlser/mysql"
 )
 
 func RequestHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -23,14 +24,11 @@ func RequestHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 		return
 	}
 
-	// 获取文件名
-
-
 	var reqBody map[string]interface{}
 	json.Unmarshal(data, &reqBody)
 	url := reqBody["addr"].(string)
 
-	go execute.AddTask(execute.DlTask{ Addr: url })
+	go execute.AddTask(mysql.DlTask{ Addr: url })
 
 	res := common.HandleRes(0, "开始下载", nil, nil)
 	fmt.Fprintln(w, res)

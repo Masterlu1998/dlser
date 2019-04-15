@@ -3,17 +3,12 @@ package execute
 import (
 	"os/exec"
 	"fmt"
+	"dlser/mysql"
 )
 
-type DlTask struct {
-	// id     int
-	Addr   string
-	Name   string
-	Status int
-}
 
 var (
-	dlch chan DlTask = make(chan DlTask)
+	dlch = make(chan mysql.DlTask)
 )
 
 func init() {
@@ -27,14 +22,16 @@ func scheduler() {
 	}
 }
 
-func AddTask(task DlTask) {
+func AddTask(task mysql.DlTask) {
 	dlch <- task
 }
 
-func executeTask(task *DlTask) {
+func executeTask(task *mysql.DlTask) {
 	url := task.Addr
+	task.Status = 0;
 	fmt.Println("开始下载")
 
+	task.CreateTask(task)
 	cmd := exec.Command("wget", url, "-P", "./file")
 	err := cmd.Run()
 	if err != nil {
@@ -44,5 +41,6 @@ func executeTask(task *DlTask) {
 	}
 
 	task.Status = 1
+	task.UpdateTask(task)
 	fmt.Println("下载完成")
 }
