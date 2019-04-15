@@ -31,17 +31,17 @@ func executeTask(task *mysql.DlTask) {
 	task.Status = 0;
 	fmt.Println("开始下载")
 
-	task.CreateTask(task)
+	task.CreateTask()
 	cmd := exec.Command("wget", url, "-P", "./file")
 	err := cmd.Run()
 	if err != nil {
 		fmt.Println(err)
 		task.Status = -1
-		task.UpdateTask(task)
+		task.UpdateTask()
 		return
 	}
 
 	task.Status = 1
-	task.UpdateTask(task)
+	task.UpdateTask()
 	fmt.Println("下载完成")
 }

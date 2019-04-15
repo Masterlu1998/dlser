@@ -1,12 +1,12 @@
 package handler
 
 import (
-	"dlser/common"
+	"net/http"
 	"encoding/json"
 	"fmt"
-	"github.com/julienschmidt/httprouter"
 	"io/ioutil"
-	"net/http"
+	"github.com/julienschmidt/httprouter"
+	"dlser/common"
 	"dlser/execute"
 	"dlser/mysql"
 )

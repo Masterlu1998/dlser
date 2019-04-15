@@ -11,18 +11,29 @@ type DlTask struct {
 	Status int
 }
 
-func (*DlTask) CreateTask(task *DlTask) {
+func (this *DlTask) CreateTask() {
 	db, err := GetDbConnection()
 	if err != nil {
 		fmt.Println(err)
 	}
-	db.Create(task)
+	db.Create(this)
 }
 
-func (*DlTask) UpdateTask(task *DlTask) {
+func (this *DlTask) UpdateTask() {
 	db, err := GetDbConnection()
 	if err != nil {
 		fmt.Println(err)
 	}
-	db.Save(task)
+	db.Save(this)
+}
+
+func (_ *DlTask) FindTaskList(index int, pageSize int, keywords string) []DlTask  {
+	db, err := GetDbConnection()
+	if err != nil {
+		fmt.Println(err)
+	}
+	keywords = "%" + keywords + "%"
+	var dlTasks []DlTask 
+	db.Offset((index - 1) * pageSize).Limit(pageSize).Where(`name LIKE ?`, keywords).Find(&dlTasks)
+	return dlTasks
 }

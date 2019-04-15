@@ -10,7 +10,7 @@ func GetDbConnection() (*gorm.DB, error) {
 		return nil, err
 	}
 
-	// grom全局设置
+	// gorm全局设置
 	db.SingularTable(true)
 	return db, nil
 }	
