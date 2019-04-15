@@ -27,8 +27,9 @@ func RequestHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 	var reqBody map[string]interface{}
 	json.Unmarshal(data, &reqBody)
 	url := reqBody["addr"].(string)
+	name := reqBody["name"].(string)
 
-	go execute.AddTask(mysql.DlTask{ Addr: url })
+	go execute.AddTask(mysql.DlTask{ Addr: url, Name: name })
 
 	res := common.HandleRes(0, "开始下载", nil, nil)
 	fmt.Fprintln(w, res)
