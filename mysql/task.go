@@ -1,7 +1,6 @@
 package mysql
 
 import(
-	"fmt"
 )
 
 type DlTask struct {
@@ -12,26 +11,17 @@ type DlTask struct {
 }
 
 func (this *DlTask) CreateTask() {
-	db, err := GetDbConnection()
-	if err != nil {
-		fmt.Println(err)
-	}
+	db := GetDbConnection()
 	db.Create(this)
 }
 
 func (this *DlTask) UpdateTask() {
-	db, err := GetDbConnection()
-	if err != nil {
-		fmt.Println(err)
-	}
+	db := GetDbConnection()
 	db.Save(this)
 }
 
 func (_ *DlTask) FindTaskList(index int, pageSize int, keywords string) []DlTask  {
-	db, err := GetDbConnection()
-	if err != nil {
-		fmt.Println(err)
-	}
+	db := GetDbConnection()
 	keywords = "%" + keywords + "%"
 	var dlTasks []DlTask 
 	db.Offset((index - 1) * pageSize).Limit(pageSize).Where(`name LIKE ?`, keywords).Find(&dlTasks)

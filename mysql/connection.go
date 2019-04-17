@@ -8,23 +8,23 @@ import (
 )
 
 var db *gorm.DB
-var l sync.Mutex
+var once sync.Once
 var err error
 
-func GetDbConnection() (*gorm.DB, error) {
+func GetDbConnection() (*gorm.DB) {
 	if db == nil {
-		fmt.Println("创建一个新的连接")
-		l.Lock()
-		defer l.Unlock()
-		if db == nil {
-			db, err = gorm.Open("mysql", "root:62795828lovE@tcp(116.62.156.102:3306)/dl_app?charset=utf8")
-			if err != nil {
-				fmt.Println(err)
-				return nil, err
+		once.Do(func() {
+			fmt.Println("创建一个新的连接")
+			if db == nil {
+				db, err = gorm.Open("mysql", "root:62795828lovE@tcp(116.62.156.102:3306)/dl_app?charset=utf8")
+				if err != nil {
+					fmt.Println(err)
+					panic(err)
+				}
+				// gorm全局设置
+				db.SingularTable(true)
 			}
-			// gorm全局设置
-			db.SingularTable(true)
-		}
+		})
 	}
-	return db, nil
+	return db
 }
