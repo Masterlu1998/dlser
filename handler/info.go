@@ -36,5 +36,30 @@ func GetTaskList(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	resObj := map[string]interface{}{"taskList": dlTasks}
 	resJSON := common.HandleRes(0, "查询成功", resObj, nil)
 	fmt.Fprintln(w, resJSON)
+}
 
+func GetFile(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	// 解析请求
+	data, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		fmt.Println(err)
+		resJSON := common.HandleRes(-1, "解析请求失败", nil, nil)
+		fmt.Fprintln(w, resJSON)
+		return
+	}
+	var reqObj map[string]interface{}
+	json.Unmarshal(data, &reqObj)
+
+	// 请求参数赋值
+	id := int(reqObj["id"].(float64))
+	findTask := mysql.DlTask{ ID: id }
+
+	// 查询数据库
+	resultTask := findTask.FindOneTask()
+
+	// 返回相应
+	w.Header().Add("Content-Type", "application/json; charset=utf-8")
+	resObj := map[string]interface{}{ "path": resultTask.Path }
+	resJSON := common.HandleRes(0, "查询成功", resObj, nil)
+	fmt.Fprintln(w, resJSON)
 }

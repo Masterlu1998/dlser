@@ -11,7 +11,6 @@ import (
 	"bytes"
 )
 
-
 var (
 	dlch = make(chan mysql.DlTask, 10)
 )
@@ -67,7 +66,8 @@ func executeTask(task *mysql.DlTask) {
 	}
 
 	// 创建本地空文件
-	f, err := os.Create("./file/" + fileName + postfix)
+	path := "/file/" + fileName + postfix
+	f, err := os.Create("." + path)
 	if err != nil {
 		fmt.Println(err)
 		task.Status = -1
@@ -80,6 +80,8 @@ func executeTask(task *mysql.DlTask) {
 	io.Copy(f, rawData)
 
 	task.Status = 1
+	task.Path = "/download" + path
+	task.ContentType = contentType
 	task.UpdateTask()
 	fmt.Println("下载完成")
 }
