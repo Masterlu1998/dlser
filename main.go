@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"github.com/julienschmidt/httprouter"
 	"dlser/handler"
-	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
