@@ -1,14 +1,19 @@
 package execute
 
 import (
-	"os/exec"
+	"os"
+	"mime"
 	"fmt"
 	"dlser/mysql"
+	"net/http"
+	"io/ioutil"
+	"io"
+	"bytes"
 )
 
 
 var (
-	dlch = make(chan mysql.DlTask)
+	dlch = make(chan mysql.DlTask, 10)
 )
 
 func init() {
@@ -27,19 +32,52 @@ func AddTask(task mysql.DlTask) {
 }
 
 func executeTask(task *mysql.DlTask) {
-	url := task.Addr
+	url, fileName := task.Addr, task.Name
 	task.Status = 0;
 	fmt.Println("开始下载")
-
 	task.CreateTask()
-	cmd := exec.Command("wget", url, "-P", "./file")
-	err := cmd.Run()
+
+	// 请求http文件
+	res, err := http.Get(url)
 	if err != nil {
 		fmt.Println(err)
 		task.Status = -1
 		task.UpdateTask()
 		return
 	}
+
+	// 读取http文件字节流
+	fileData, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		fmt.Println(err)
+		task.Status = -1
+		task.UpdateTask()
+		return
+	}
+
+	// 获取文件类型
+	contentType := http.DetectContentType(fileData)
+	postfixSlice, err := mime.ExtensionsByType(contentType)
+	postfix := postfixSlice[0]
+	if err != nil {
+		fmt.Println(err)
+		task.Status = -1
+		task.UpdateTask()
+		return
+	}
+
+	// 创建本地空文件
+	f, err := os.Create("./file/" + fileName + postfix)
+	if err != nil {
+		fmt.Println(err)
+		task.Status = -1
+		task.UpdateTask()
+		return
+	}
+
+	// 因为之前的res.Body reader已经被读取清空 重新生成一个新的reader
+	rawData := bytes.NewReader(fileData)
+	io.Copy(f, rawData)
 
 	task.Status = 1
 	task.UpdateTask()
