@@ -22,7 +22,7 @@ func init() {
 func scheduler() {	
 	for val := range dlch {
 		fmt.Println("执行下载")
-		executeTask(&val)
+		go executeTask(&val)
 	}
 }
 
@@ -47,6 +47,7 @@ func executeTask(task *mysql.DlTask) {
 
 	// 读取http文件字节流
 	fileData, err := ioutil.ReadAll(res.Body)
+	defer res.Body.Close()
 	if err != nil {
 		fmt.Println(err)
 		task.Status = -1
@@ -68,6 +69,7 @@ func executeTask(task *mysql.DlTask) {
 	// 创建本地空文件
 	path := "/file/" + fileName + postfix
 	f, err := os.Create("." + path)
+	defer f.Close()
 	if err != nil {
 		fmt.Println(err)
 		task.Status = -1

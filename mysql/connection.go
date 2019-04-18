@@ -11,12 +11,12 @@ var db *gorm.DB
 var err error
 
 func init() {
-	fmt.Println("新建mysql连接")
 	db, err = gorm.Open("mysql", "root:62795828lovE@tcp(116.62.156.102:3306)/dl_app?charset=utf8")
 	if err != nil {
 		panic(err)
 	}
 	db.SingularTable(true)
+	fmt.Println("新建mysql连接")
 }
 
 func GetDbConnection() *gorm.DB {
