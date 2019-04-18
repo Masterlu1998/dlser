@@ -6,7 +6,7 @@ type DlTask struct {
 	Name        string `json:"name"`
 	Status      int    `json:"status"`
 	Path        string `json:"path"`
-	ContentType string `json:"contentType`
+	ContentType string `json:"contentType"`
 }
 
 func (this *DlTask) CreateTask() {
@@ -16,14 +16,14 @@ func (this *DlTask) CreateTask() {
 
 func (this *DlTask) UpdateTask() {
 	db := GetDbConnection()
-	db.Save(this)
+	db.Model(this).Updates(*this)
 }
 
 func (_ *DlTask) FindTaskList(index int, pageSize int, keywords string) []DlTask {
 	db := GetDbConnection()
 	keywords = "%" + keywords + "%"
 	var dlTasks []DlTask
-	db.Offset((index-1)*pageSize).Limit(pageSize).Where(`name LIKE ?`, keywords).Find(&dlTasks)
+	db.Offset((index-1)*pageSize).Limit(pageSize).Where(`name LIKE ? AND status != -2`, keywords).Find(&dlTasks)
 	return dlTasks
 }
 
