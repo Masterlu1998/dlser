@@ -20,13 +20,13 @@ func RequestHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 
 	// 解析请求
 	data, err := ioutil.ReadAll(r.Body)
-	defer r.Body.Close()
 	if err != nil {
 		res := common.HandleRes(-1, "解析错误", nil, err)
 		fmt.Fprintln(w, res)
 		return
 	}
-	var reqBody map[string]interface{}
+	defer r.Body.Close()
+ 	reqBody := make(map[string]interface{})
 	json.Unmarshal(data, &reqBody)
 
 	// 赋值
@@ -53,7 +53,7 @@ func GetFileHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 		fmt.Fprintln(w, resJSON)
 		return
 	}
-	var reqObj map[string]interface{}
+	reqObj := make(map[string]interface{})
 	json.Unmarshal(data, &reqObj)
 
 	// 请求参数赋值
@@ -83,7 +83,7 @@ func DeleteFileHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 		fmt.Fprintln(w, resJSON)
 		return
 	}
-	var reqObj map[string]interface{}
+  reqObj := make(map[string]interface{})
 	json.Unmarshal(data, &reqObj)
 
 	// 入参赋值

@@ -24,7 +24,7 @@ func GetTaskListHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 		fmt.Fprintln(w, resJSON)
 		return
 	}
-	var reqObj map[string]interface{}
+	reqObj := make(map[string]interface{})
 	json.Unmarshal(data, &reqObj)
 
 	// 赋值参数
