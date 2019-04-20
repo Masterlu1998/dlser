@@ -14,16 +14,16 @@ import (
 func GetTaskListHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	// 先设置响应头
 	w.Header().Add("Content-Type", "application/json; charset=utf-8")
-	
+
 	// 读取请求参数
 	data, err := ioutil.ReadAll(r.Body)
-	defer r.Body.Close()
 	if err != nil {
 		fmt.Println(err)
 		resJSON := common.HandleRes(-1, "读取失败", nil, nil)
 		fmt.Fprintln(w, resJSON)
 		return
 	}
+	defer r.Body.Close()
 	reqObj := make(map[string]interface{})
 	json.Unmarshal(data, &reqObj)
 

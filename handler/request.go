@@ -46,13 +46,13 @@ func GetFileHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 
 	// 解析请求
 	data, err := ioutil.ReadAll(r.Body)
-	defer r.Body.Close()
 	if err != nil {
 		fmt.Println(err)
 		resJSON := common.HandleRes(-1, "解析请求失败", nil, nil)
 		fmt.Fprintln(w, resJSON)
 		return
 	}
+	defer r.Body.Close()
 	reqObj := make(map[string]interface{})
 	json.Unmarshal(data, &reqObj)
 
@@ -76,13 +76,13 @@ func DeleteFileHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 
 	// 解析请求
 	data, err := ioutil.ReadAll(r.Body)
-	defer r.Body.Close()
 	if err != nil {
 		fmt.Println(err)
 		resJSON := common.HandleRes(-1, "解析失败", nil, nil)
 		fmt.Fprintln(w, resJSON)
 		return
 	}
+	defer r.Body.Close()
   reqObj := make(map[string]interface{})
 	json.Unmarshal(data, &reqObj)
 
