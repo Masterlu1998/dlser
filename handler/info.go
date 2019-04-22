@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"time"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -28,16 +29,18 @@ func GetTaskListHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 		Index int `json:"index"`
 		PageSize int `json:"pageSize"`
 		Keywords string `json:"keywords"`
+		StartTime time.Time `json:"startTime"`
+		EndTime time.Time `json:"endTime"`
 	}
 	req := reqObj{}
 	json.Unmarshal(data, &req)
 
 	// 赋值参数
-	index, pageSize, keywords := req.Index, req.PageSize, req.Keywords
+	index, pageSize, keywords, startTime, endTime := req.Index, req.PageSize, req.Keywords, req.StartTime, req.EndTime
 
 	// 调用接口获取查询结果
 	dlTask := new(mysql.DlTask)
-	dlTasks := dlTask.FindTaskInfoList(index, pageSize, keywords)
+	dlTasks := dlTask.FindTaskInfoList(index, pageSize, keywords, startTime, endTime)
 
 	// 设置响应头，返回响应
 	resObj := map[string]interface{}{"taskList": dlTasks}

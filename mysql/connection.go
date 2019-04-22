@@ -11,7 +11,7 @@ var db *gorm.DB
 var err error
 
 func init() {
-	db, err = gorm.Open("mysql", "root:62795828lovE@tcp(116.62.156.102:3306)/dl_app?charset=utf8")
+	db, err = gorm.Open("mysql", "root:62795828lovE@tcp(116.62.156.102:3306)/dl_app?charset=utf8&parseTime=true")
 	if err != nil {
 		panic(err)
 	}
