@@ -25,18 +25,18 @@ func GetTaskListHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 		return
 	}
 	defer r.Body.Close()
-	type reqObj struct {
+	var reqObj struct {
 		Index     int       `json:"index"`
 		PageSize  int       `json:"pageSize"`
 		Keywords  string    `json:"keywords"`
 		StartTime time.Time `json:"startTime"`
 		EndTime   time.Time `json:"endTime"`
 	}
-	req := reqObj{}
-	json.Unmarshal(data, &req)
+	// req := reqObj{}
+	json.Unmarshal(data, &reqObj)
 
 	// 赋值参数
-	index, pageSize, keywords, startTime, endTime := req.Index, req.PageSize, req.Keywords, req.StartTime, req.EndTime
+	index, pageSize, keywords, startTime, endTime := reqObj.Index, reqObj.PageSize, reqObj.Keywords, reqObj.StartTime, reqObj.EndTime
 
 	// 调用接口获取查询结果
 	dlTask := new(mysql.DlTask)

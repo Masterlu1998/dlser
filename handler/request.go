@@ -26,15 +26,14 @@ func RequestHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 		return
 	}
 	defer r.Body.Close()
-	type reqBody struct {
+	var reqObj struct {
 		Addr string `json:"addr"`
 		Name string `json:"name"`
 	}
-	req := reqBody{}
-	json.Unmarshal(data, &req)
+	json.Unmarshal(data, &reqObj)
 
 	// 赋值
-	url, name := req.Addr, req.Name
+	url, name := reqObj.Addr, reqObj.Name
 
 	// 往任务通道中添加下载任务
 	execute.AddTask(mysql.DlTask{Addr: url, Name: name})
@@ -57,14 +56,13 @@ func GetFileHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 		return
 	}
 	defer r.Body.Close()
-	type reqObj struct {
+	var reqObj struct {
 		ID int `json:"id"`
 	}
-	req := reqObj{}
-	json.Unmarshal(data, &req)
+	json.Unmarshal(data, &reqObj)
 
 	// 请求参数赋值
-	id := req.ID
+	id := reqObj.ID
 	findTask := mysql.DlTask{ID: id}
 
 	// 查询数据库
@@ -90,14 +88,13 @@ func DeleteFileHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 		return
 	}
 	defer r.Body.Close()
-	type reqObj struct {
+	var reqObj struct {
 		ID []int `json:"id"`
 	}
-	req := reqObj{}
-	json.Unmarshal(data, &req)
+	json.Unmarshal(data, &reqObj)
 
 	// 入参赋值
-	idInterfaceSli := req.ID
+	idInterfaceSli := reqObj.ID
 
 	// 数据库操作
 	findTask := new(mysql.DlTask)
