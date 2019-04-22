@@ -26,11 +26,15 @@ func RequestHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 		return
 	}
 	defer r.Body.Close()
- 	reqBody := make(map[string]interface{})
-	json.Unmarshal(data, &reqBody)
+	type reqBody struct {
+		Addr string `json:"addr"`
+		Name string `json:"name"`
+	}
+ 	req := reqBody{}
+	json.Unmarshal(data, &req)
 
 	// 赋值
-	url, name := reqBody["addr"].(string), reqBody["name"].(string)
+	url, name := req.Addr, req.Name
 
 	// 往任务通道中添加下载任务
 	execute.AddTask(mysql.DlTask{Addr: url, Name: name})
@@ -53,11 +57,14 @@ func GetFileHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 		return
 	}
 	defer r.Body.Close()
-	reqObj := make(map[string]interface{})
-	json.Unmarshal(data, &reqObj)
+	type reqObj struct {
+		ID int `json:"id"`
+	}
+	req := reqObj{}
+	json.Unmarshal(data, &req)
 
 	// 请求参数赋值
-	id := int(reqObj["id"].(float64))
+	id := req.ID
 	findTask := mysql.DlTask{ ID: id }
 
 	// 查询数据库
@@ -83,27 +90,25 @@ func DeleteFileHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 		return
 	}
 	defer r.Body.Close()
-  reqObj := make(map[string]interface{})
-	json.Unmarshal(data, &reqObj)
+	type reqObj struct {
+		ID []int `json:"id"`
+	}
+  req := reqObj{}
+	json.Unmarshal(data, &req)
 
 	// 入参赋值
-	// TODO: 优化写法
-	idInterfaceSli := reqObj["id"].([]interface{})
-	var idSli []int
-	for _, val := range idInterfaceSli {
-		idSli = append(idSli, int(val.(float64)))
-	}
+	idInterfaceSli := req.ID
 
 	// 数据库操作
 	findTask := new(mysql.DlTask)
-	filePaths := findTask.FindFilePath(idSli)
+	filePaths := findTask.FindFilePath(idInterfaceSli)
 	if len(filePaths) == 0 {
 		fmt.Println(err)
 		resJSON := common.HandleRes(-1, "文件已删除", nil, nil)
 		fmt.Fprintln(w, resJSON)
 		return
 	}
-	deleteTask := execute.DeleteTask{ FilePathSli: filePaths ,IdSli: idSli }
+	deleteTask := execute.DeleteTask{ FilePathSli: filePaths ,IdSli: idInterfaceSli }
 	execute.AddDelete(deleteTask)
 
 	// 返回响应
