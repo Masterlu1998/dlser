@@ -26,11 +26,11 @@ func GetTaskListHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 	}
 	defer r.Body.Close()
 	type reqObj struct {
-		Index int `json:"index"`
-		PageSize int `json:"pageSize"`
-		Keywords string `json:"keywords"`
+		Index     int       `json:"index"`
+		PageSize  int       `json:"pageSize"`
+		Keywords  string    `json:"keywords"`
 		StartTime time.Time `json:"startTime"`
-		EndTime time.Time `json:"endTime"`
+		EndTime   time.Time `json:"endTime"`
 	}
 	req := reqObj{}
 	json.Unmarshal(data, &req)

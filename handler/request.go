@@ -30,7 +30,7 @@ func RequestHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 		Addr string `json:"addr"`
 		Name string `json:"name"`
 	}
- 	req := reqBody{}
+	req := reqBody{}
 	json.Unmarshal(data, &req)
 
 	// 赋值
@@ -65,7 +65,7 @@ func GetFileHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 
 	// 请求参数赋值
 	id := req.ID
-	findTask := mysql.DlTask{ ID: id }
+	findTask := mysql.DlTask{ID: id}
 
 	// 查询数据库
 	resultTask := findTask.FindOneTask()
@@ -93,7 +93,7 @@ func DeleteFileHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 	type reqObj struct {
 		ID []int `json:"id"`
 	}
-  req := reqObj{}
+	req := reqObj{}
 	json.Unmarshal(data, &req)
 
 	// 入参赋值
@@ -108,7 +108,7 @@ func DeleteFileHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 		fmt.Fprintln(w, resJSON)
 		return
 	}
-	deleteTask := execute.DeleteTask{ FilePathSli: filePaths ,IdSli: idInterfaceSli }
+	deleteTask := execute.DeleteTask{FilePathSli: filePaths, IdSli: idInterfaceSli}
 	execute.AddDelete(deleteTask)
 
 	// 返回响应
