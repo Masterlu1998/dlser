@@ -4,7 +4,6 @@ import (
 	"dlser/common"
 	"dlser/mysql"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -19,9 +18,7 @@ func GetTaskListHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 	// 读取请求参数
 	data, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		fmt.Println(err)
-		resJSON := common.HandleRes(-1, "读取失败", nil, nil)
-		fmt.Fprintln(w, resJSON)
+		common.HandleErr(w, -1, err, "读取失败")
 		return
 	}
 	defer r.Body.Close()
@@ -33,8 +30,11 @@ func GetTaskListHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 		EndTime   time.Time `json:"endTime"`
 	}
 	// req := reqObj{}
-	json.Unmarshal(data, &reqObj)
-
+	err = json.Unmarshal(data, &reqObj)
+	if err != nil {
+		common.HandleErr(w, -1, err, "json解析失败")
+		return
+	}
 	// 赋值参数
 	index, pageSize, keywords, startTime, endTime := reqObj.Index, reqObj.PageSize, reqObj.Keywords, reqObj.StartTime, reqObj.EndTime
 
@@ -42,8 +42,7 @@ func GetTaskListHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 	dlTask := new(mysql.DlTask)
 	dlTasks := dlTask.FindTaskInfoList(index, pageSize, keywords, startTime, endTime)
 
-	// 设置响应头，返回响应
+	// 返回响应
 	resObj := map[string]interface{}{"taskList": dlTasks}
-	resJSON := common.HandleRes(0, "查询成功", resObj, nil)
-	fmt.Fprintln(w, resJSON)
+	common.HandleSuc(w, 0, resObj, "查询成功")
 }
