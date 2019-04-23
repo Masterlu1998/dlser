@@ -18,7 +18,7 @@ func GetTaskListHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 	// 读取请求参数
 	data, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		common.HandleErr(w, -1, err, "读取失败")
+		common.HandleErr(w, common.ReadRequestErrInfo.Code, err, common.ReadRequestErrInfo.Msg)
 		return
 	}
 	defer r.Body.Close()
@@ -32,7 +32,7 @@ func GetTaskListHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 	// req := reqObj{}
 	err = json.Unmarshal(data, &reqObj)
 	if err != nil {
-		common.HandleErr(w, -1, err, "json解析失败")
+		common.HandleErr(w, common.JSONParseErrInfo.Code, err, common.JSONParseErrInfo.Msg)
 		return
 	}
 	// 赋值参数
@@ -44,5 +44,5 @@ func GetTaskListHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 
 	// 返回响应
 	resObj := map[string]interface{}{"taskList": dlTasks}
-	common.HandleSuc(w, 0, resObj, "查询成功")
+	common.HandleSuc(w, common.FindSuccessInfo.Code, resObj, common.FindSuccessInfo.Msg)
 }

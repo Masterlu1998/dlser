@@ -21,7 +21,7 @@ func RequestHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 	// 解析请求
 	data, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		common.HandleErr(w, -1, err, "解析错误")
+		common.HandleErr(w, common.ReadRequestErrInfo.Code, err, common.ReadRequestErrInfo.Msg)
 		return
 	}
 	defer r.Body.Close()
@@ -31,7 +31,7 @@ func RequestHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 	}
 	err = json.Unmarshal(data, &reqObj)
 	if err != nil {
-		common.HandleErr(w, -1, nil, "解析失败")
+		common.HandleErr(w, common.JSONParseErrInfo.Code, nil, common.JSONParseErrInfo.Msg)
 		return
 	}
 
@@ -41,7 +41,7 @@ func RequestHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 	// 往任务通道中添加下载任务
 	execute.AddTask(mysql.DlTask{Addr: url, Name: name})
 
-	common.HandleSuc(w, 0, nil, "开始下载")
+	common.HandleSuc(w, common.DownloadFileSuccessInfo.Code, nil, common.DownloadFileSuccessInfo.Msg)
 }
 
 // 获取文件处理器
@@ -52,7 +52,7 @@ func GetFileHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 	// 解析请求
 	data, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		common.HandleErr(w, -1, err, "解析请求失败")
+		common.HandleErr(w, common.ReadRequestErrInfo.Code, err, common.ReadRequestErrInfo.Msg)
 		return
 	}
 	defer r.Body.Close()
@@ -61,7 +61,7 @@ func GetFileHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 	}
 	err = json.Unmarshal(data, &reqObj)
 	if err != nil {
-		common.HandleErr(w, -1, err, "json解析失败")
+		common.HandleErr(w, common.JSONParseErrInfo.Code, err, common.JSONParseErrInfo.Msg)
 		return
 	}
 
@@ -74,7 +74,7 @@ func GetFileHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 
 	// 返回相应
 	resObj := map[string]interface{}{"path": resultTask.Path}
-	common.HandleSuc(w, 0, resObj, "查询成功")
+	common.HandleSuc(w, common.FindSuccessInfo.Code, resObj, common.FindSuccessInfo.Msg)
 }
 
 // 删除文件处理器
@@ -85,7 +85,7 @@ func DeleteFileHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 	// 解析请求
 	data, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		common.HandleErr(w, -1, err, "请求读取失败")
+		common.HandleErr(w, common.ReadRequestErrInfo.Code, err, common.ReadRequestErrInfo.Msg)
 		return
 	}
 	defer r.Body.Close()
@@ -94,7 +94,7 @@ func DeleteFileHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 	}
 	err = json.Unmarshal(data, &reqObj)
 	if err != nil {
-		common.HandleErr(w, -1, err, "json解析失败")
+		common.HandleErr(w, common.JSONParseErrInfo.Code, err, common.JSONParseErrInfo.Msg)
 		return
 	}
 
@@ -105,12 +105,12 @@ func DeleteFileHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 	findTask := new(mysql.DlTask)
 	filePaths := findTask.FindFilePath(idInterfaceSli)
 	if len(filePaths) == 0 {
-		common.HandleErr(w, -1, err, "文件已删除")
+		common.HandleErr(w, common.FileHasBeenDeletedErrInfo.Code, err, common.FileHasBeenDeletedErrInfo.Msg)
 		return
 	}
 	deleteTask := execute.DeleteTask{FilePathSli: filePaths, IdSli: idInterfaceSli}
 	execute.AddDelete(deleteTask)
 
 	// 返回响应
-	common.HandleSuc(w, 0, nil, "删除成功")
+	common.HandleSuc(w, common.DeleteFileSuccessInfo.Code, nil, common.DeleteFileSuccessInfo.Msg)
 }
