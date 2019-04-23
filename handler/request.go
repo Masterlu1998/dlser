@@ -15,7 +15,7 @@ import (
 // 请求下载处理器
 func RequestHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	// 返回响应
-	common.WriteHeader(w, "Content-Type", "application/json")
+	common.WriteJSONHeader(w)
 	fmt.Println("收到下载请求！")
 
 	// 解析请求
@@ -47,7 +47,7 @@ func RequestHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 // 获取文件处理器
 func GetFileHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	// 先设置响应头
-	common.WriteHeader(w, "Content-Type", "application/json")
+	common.WriteJSONHeader(w)
 
 	// 解析请求
 	data, err := ioutil.ReadAll(r.Body)
@@ -80,7 +80,7 @@ func GetFileHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 // 删除文件处理器
 func DeleteFileHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	// 先设置响应头
-	common.WriteHeader(w, "Content-Type", "application/json")
+	common.WriteJSONHeader(w)
 
 	// 解析请求
 	data, err := ioutil.ReadAll(r.Body)

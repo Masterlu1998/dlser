@@ -23,8 +23,8 @@ func HandleRes(code int, prompt string, obj map[string]interface{}, err error) s
 	return string(resJSON)
 }
 
-func WriteHeader(w http.ResponseWriter, key string, val string) {
-	w.Header().Add(key, val)
+func WriteJSONHeader(w http.ResponseWriter) {
+	w.Header().Add("Content-Type", "application/json; charset=utf-8")
 }
 
 func HandleErr(w http.ResponseWriter, code int, err error, prompt string) {

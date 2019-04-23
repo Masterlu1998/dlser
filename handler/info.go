@@ -13,7 +13,7 @@ import (
 
 func GetTaskListHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	// 先设置响应头
-	w.Header().Add("Content-Type", "application/json; charset=utf-8")
+	common.WriteJSONHeader(w)
 
 	// 读取请求参数
 	data, err := ioutil.ReadAll(r.Body)
@@ -29,7 +29,6 @@ func GetTaskListHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 		StartTime time.Time `json:"startTime"`
 		EndTime   time.Time `json:"endTime"`
 	}
-	// req := reqObj{}
 	err = json.Unmarshal(data, &reqObj)
 	if err != nil {
 		common.HandleErr(w, common.JSONParseErrInfo.Code, err, common.JSONParseErrInfo.Msg)
